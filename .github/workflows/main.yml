@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: VCPI-Cockpit-BE-CI
+name: test
 
 # Controls when the workflow will run
 on:
@@ -11,8 +11,11 @@ on:
 
 env:
   # Variables needed to build and push the image
-  WORKING_DIC: VCPI-Cockpit-BE
-  GHP_IMAGE_NAME: vcpi-cockpit-be
+  WORKING_DIC: test
+  GHP_IMAGE_NAME: test
+  ACR_NAME: https://adessotr.azurecr.io
+
+
 
 
 
@@ -37,20 +40,14 @@ jobs:
           fetch-depth: 0
  
       # set up image name
-      - name: set up image name
-        id: setup
-        run: |
-          GHE_URL=${{ github.server_url }}/$(echo ${{ github.repository }} | awk '{print tolower($0)}')
-          REGISTRY=$(sed 's/https:\/\//docker\./' <<< $GHE_URL)
-          echo "::set-output name=REGISTRY::$REGISTRY"
-          echo "::set-output name=IMAGE_NAME::$REGISTRY/${{ env.GHP_IMAGE_NAME }}"
+      
       # login to GitHub Packages
       - name: Login to Github Packages
         uses: docker/login-action@v1.10.0
         with:
-          registry: ${{ steps.setup.outputs.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.ACR_NAME }}
+          username: adessotr
+          password: x44ZmwrVuyaYEhVj+0zsgB=hb9mq88V=
       # Set up Docker environment
       - name: set up qemu
         uses: docker/setup-qemu-action@v1
